@@ -15,7 +15,7 @@ static bool send_all(int fd, const void* data, size_t size) {
         if (n < 0) {
             if (errno == EINTR) continue;
             if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                usleep(1000); // Brief wait for non-blocking sockets
+                sleep(1000); // Brief wait for non-blocking sockets
                 continue;
             }
             perror("send_all write");
@@ -39,7 +39,7 @@ static bool recv_all(int fd, void* data, size_t size) {
         if (n < 0) {
             if (errno == EINTR) continue;
             if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                usleep(1000);
+                sleep(1000);
                 continue;
             }
             perror("recv_all read");

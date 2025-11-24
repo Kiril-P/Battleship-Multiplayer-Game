@@ -26,8 +26,15 @@ static bool handle_placement_phase(GameClient* client) {
             // Get placement from user
             int row, col, rotation;
             if (!ui_prompt_placement(ship_type, &row, &col, &rotation)) {
+                sleep(2); // Give user time to read the error message
                 continue;
             }
+            
+            // Show preview of the ship placement
+            ui_clear_screen();
+            ui_display_board_with_preview(&client->own_board, "YOUR BOARD (Preview)", 
+                                          ship_type, row, col, rotation);
+            ui_display_placement_instructions(ship_type);
             
             // Validate locally first
             ShipPlacement placement;
@@ -97,6 +104,7 @@ static bool handle_playing_phase(GameClient* client) {
             // Get shot from user
             int row, col;
             if (!ui_prompt_shot(&row, &col)) {
+                sleep(2); // Give user time to read the error message
                 continue;
             }
             

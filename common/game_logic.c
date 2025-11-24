@@ -22,9 +22,9 @@ bool validate_ship_placement(const Board* board, const ShipPlacement* placement,
         return false;
     }
     
-    // Check rotation is valid (0-7)
-    if (placement->rotation > 7) {
-        snprintf(error_msg, error_size, "Invalid rotation: %d (must be 0-7)", placement->rotation);
+    // Check rotation is valid (0-3)
+    if (placement->rotation > 3) {
+        snprintf(error_msg, error_size, "Invalid rotation: %d (must be 0-3)", placement->rotation);
         return false;
     }
     

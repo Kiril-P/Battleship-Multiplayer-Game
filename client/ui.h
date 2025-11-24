@@ -33,8 +33,16 @@ void ui_display_boards(const Board* own_board, const Board* opponent_board, bool
 // Display single board
 void ui_display_board(const Board* board, const char* title, bool show_ships);
 
+// Display board with ship placement preview
+void ui_display_board_with_preview(const Board* board, const char* title, 
+                                    ShipType ship_type, int preview_row, 
+                                    int preview_col, int preview_rotation);
+
 // Display placement instructions
 void ui_display_placement_instructions(ShipType current_ship);
+
+// Display visual representation of ship shape
+void ui_display_ship_shape(ShipType ship_type, int rotation);
 
 // Display game status message
 void ui_display_message(const char* message, bool is_error);

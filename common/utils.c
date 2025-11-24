@@ -10,6 +10,7 @@
 #include <netdb.h>
 #include <ifaddrs.h>
 #include <ctype.h>
+#include <sys/time.h>
 
 int create_listening_socket(int port) {
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -159,12 +160,12 @@ bool parse_coordinate(const char* str, int* row, int* col) {
     if (str == NULL || strlen(str) < 2) return false;
     
     char row_char = toupper(str[0]);
-    if (row_char < 'A' || row_char > 'H') return false;
+    if (row_char < 'A' || row_char > 'F') return false;
     
     *row = row_char - 'A';
     
     char col_char = str[1];
-    if (col_char < '1' || col_char > '8') return false;
+    if (col_char < '1' || col_char > '6') return false;
     
     *col = col_char - '1';
     

@@ -5,19 +5,17 @@
 #include <stdbool.h>
 
 // Grid dimensions
-#define GRID_SIZE 8
-#define NUM_SHIPS 5
+#define GRID_SIZE 6
+#define NUM_SHIPS 3
 
 // Ship types
 typedef enum {
     SHIP_DESTROYER_1 = 0,  // 2 cells straight
-    SHIP_DESTROYER_2 = 1,  // 2 cells straight
-    SHIP_L_SHAPE = 2,      // 3 cells L-shaped
-    SHIP_Z_SHAPE = 3,      // 4 cells Z-shaped
-    SHIP_LARGE_L = 4       // 5 cells large L (3x3 squared L)
+    SHIP_L_SHAPE = 1,      // 3 cells L-shaped
+    SHIP_Z_SHAPE = 2       // 4 cells Z-shaped
 } ShipType;
 
-// Ship rotation (0-7, covers all orientations)
+// Ship rotation (0-3, covers horizontal and vertical orientations only)
 typedef uint8_t Rotation;
 
 // Cell state
@@ -58,9 +56,9 @@ typedef enum {
 // Ship placement info
 typedef struct {
     ShipType type;
-    uint8_t row;      // 0-7 (A-H)
-    uint8_t col;      // 0-7 (1-8)
-    Rotation rotation; // 0-7
+    uint8_t row;      // 0-5 (A-F)
+    uint8_t col;      // 0-5 (1-6)
+    Rotation rotation; // 0-3
 } __attribute__((packed)) ShipPlacement;
 
 // Message header
