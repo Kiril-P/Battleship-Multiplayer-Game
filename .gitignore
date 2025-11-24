@@ -14,8 +14,8 @@ Makefile
 *.obj
 
 # Executables
-server
-client
+/build/server
+/build/client
 *.exe
 *.out
 *.app
