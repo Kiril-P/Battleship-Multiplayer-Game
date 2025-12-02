@@ -22,11 +22,7 @@ bool validate_ship_placement(const Board* board, const ShipPlacement* placement,
         return false;
     }
     
-    // Check rotation is valid (0-3)
-    if (placement->rotation > 3) {
-        snprintf(error_msg, error_size, "Invalid rotation: %d (must be 0-3)", placement->rotation);
-        return false;
-    }
+    // Rotation is ignored (always 0) - ships have fixed orientation
     
     // Get ship cells
     int cells[MAX_SHIP_CELLS][2];
@@ -152,4 +148,6 @@ bool all_ships_placed(const Board* board) {
 bool is_game_over(const Board* board) {
     return board->ships_remaining == 0;
 }
+
+
 

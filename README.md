@@ -4,17 +4,17 @@ A production-quality, multiplayer turn-based Battleship game implemented in pure
 
 ## Features
 
-- **8×8 Grid** with modern ship shapes (A-H rows, 1-8 columns)
-- **5 Custom Ships**:
-  - Two 2-cell Destroyers
+- **6×6 Grid** (rows A-F, columns 1-6)
+- **4 Simple Ships**:
+  - One 2-cell Destroyer (horizontal: DD)
+  - One 2-cell Destroyer (vertical)
   - One 3-cell L-shaped ship
-  - One 4-cell Z-shaped ship  
-  - One 5-cell Large L-shaped ship
+  - One 4-cell Z-shaped ship (actual Z, not square!)
 - **Real TCP Networking** - works across different machines on the same network
 - **Client-Server Architecture** with authoritative server
 - **Multi-threaded** - one thread per client
 - **Beautiful Terminal UI** with ANSI colors
-- **Ship placement** with 8 rotation angles (0-7)
+- **Simple ship placement** - no rotation needed, fixed ship orientations
 - **Fog of war** - can't see opponent's ships until you hit them
 - **Graceful disconnect handling**
 
@@ -62,30 +62,25 @@ make
 **Terminal 1 - Start Server:**
 ```bash
 cd build
-./server 5000
+./server 8080
 ```
 
-The server will display its IP address. Look for output like:
 ```
-===========================================
-Battleship Server Started
-===========================================
-Listening on: 192.168.1.50:5000
-Also accessible on: 0.0.0.0:5000
-Waiting for 2 players to connect...
-===========================================
+To find your IP for other players, use:
+  macOS/Linux: ifconfig | grep "inet "
+  Windows: ipconfig
 ```
 
 **Terminal 2 - Player 1:**
 ```bash
 cd build
-./client 127.0.0.1 5000 Alice
+./client 127.0.0.1 8080 Alice
 ```
 
 **Terminal 3 - Player 2:**
 ```bash
 cd build
-./client 127.0.0.1 5000 Bob
+./client 127.0.0.1 8080 Bob
 ```
 
 ### Option 2: Multiple Machines (Network Play)
@@ -95,28 +90,10 @@ This is the real multiplayer experience! All machines must be on the same networ
 **Machine 1 - Server:**
 ```bash
 cd build
-./server 5000
+./server 8080    # Use 8080 for macOS (5000 conflicts with AirPlay)
 ```
 
-Note the IP address shown (e.g., `192.168.1.50`). Share this IP with other players.
-
-**Machine 2 - Player 1:**
-```bash
-cd build
-./client 192.168.1.50 5000 Player1
-```
-
-**Machine 3 - Player 2:**
-```bash
-cd build
-./client 192.168.1.50 5000 Player2
-```
-
-Replace `192.168.1.50` with the actual IP address displayed by the server.
-
-### Finding Your Server's IP Address
-
-The server automatically detects and displays its IP address. Alternatively:
+**Find your server's IP address using:**
 
 **On macOS:**
 ```bash
@@ -133,44 +110,54 @@ ip addr show | grep "inet " | grep -v 127.0.0.1
 ipconfig
 ```
 
+**Then share the IP with other players (e.g., `192.168.1.50`)**
+
+**Machine 2 - Player 1:**
+```bash
+cd build
+./client 192.168.1.50 8080 Player1    # Use your server's IP
+```
+
+**Machine 3 - Player 2:**
+```bash
+cd build
+./client 192.168.1.50 8080 Player2    # Use your server's IP
+```
+
 ## How to Play
 
 ### Phase 1: Ship Placement
 
-Each player must place all 5 ships on their board:
+Each player must place all 4 ships on their board:
 
-1. **Destroyers (2)**: 2 cells each (D, d)
-2. **L-Ship (1)**: 3 cells in L-shape (L)
-3. **Z-Ship (1)**: 4 cells in Z-shape (Z)
-4. **Large L (1)**: 5 cells in large L-shape (B)
+1. **Destroyer (Horizontal)**: 2 cells - DD
+2. **Destroyer (Vertical)**: 2 cells
+3. **L-Ship**: 3 cells in L-shape
+4. **Z-Ship**: 4 cells in Z-shape
 
 **Placement Format:**
 ```
-<ROW><COLUMN> R<ROTATION>
+<ROW><COLUMN>
 ```
 
 **Examples:**
 ```
-A1 R0    - Place at row A, column 1, rotation 0 (horizontal right)
-D5 R2    - Place at row D, column 5, rotation 2 (vertical down)
-H8 R4    - Place at row H, column 8, rotation 4 (horizontal left)
+A1    - Place Destroyer (Horizontal) at A1
+A4    - Place Destroyer (Vertical) at A4
+D2    - Place L-Ship at D2
+F2    - Place Z-Ship at F2
 ```
 
-**Rotations:**
-- 0 = → (right)
-- 1 = ↘ (diagonal down-right)
-- 2 = ↓ (down)
-- 3 = ↙ (diagonal down-left)
-- 4 = ← (left)
-- 5 = ↖ (diagonal up-left)
-- 6 = ↑ (up)
-- 7 = ↗ (diagonal up-right)
+**Ship Shapes (Fixed Orientations):**
+- **Destroyer (Horizontal)**: `DD` (2 cells wide)
+- **Destroyer (Vertical)**: `D` over `D` (2 cells tall)
+- **L-Ship**: `X` then `XX` (corner shape)
+- **Z-Ship**: `ZZ` then ` ZZ` (zigzag)
 
 The game validates your placement and prevents:
 - Ships going out of bounds
 - Ships overlapping
-- Invalid rotations
-- Duplicate ship types
+- Placing the same ship twice
 
 ### Phase 2: Battle
 
@@ -185,7 +172,7 @@ Players take turns shooting at the opponent's board.
 ```
 A1    - Shoot at row A, column 1
 D5    - Shoot at row D, column 5
-H8    - Shoot at row H, column 8
+F6    - Shoot at row F, column 6
 ```
 
 **Results:**
@@ -193,7 +180,7 @@ H8    - Shoot at row H, column 8
 - **HIT** (X) - Shot hit a ship
 - **SUNK** (X) - Shot destroyed the last cell of a ship
 
-**Win Condition:** First player to sink all 5 opponent ships wins!
+**Win Condition:** First player to sink all 4 opponent ships wins!
 
 ## Game Board Legend
 
@@ -201,14 +188,20 @@ H8    - Shoot at row H, column 8
 ~ (blue)   - Water / Unknown
 · (gray)   - Miss
 X (red)    - Hit
-D,d,L,Z,B  - Your ships (only visible on your board)
+D,d,L,Z    - Your ships (only visible on your board)
+           - D = Horizontal Destroyer
+           - d = Vertical Destroyer
 ```
 
 ## Network Configuration
 
+### Port Recommendation
+
+**Important:** On macOS, port 5000 is used by AirPlay Receiver. Use port **8080** instead!
+
 ### Firewall Settings
 
-If players can't connect, ensure the server's firewall allows incoming connections on port 5000:
+If players can't connect, ensure the server's firewall allows incoming connections on your chosen port:
 
 **macOS:**
 ```bash
@@ -220,12 +213,12 @@ sudo /usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate
 
 **Linux (ufw):**
 ```bash
-sudo ufw allow 5000/tcp
+sudo ufw allow 8080/tcp
 ```
 
 **Linux (iptables):**
 ```bash
-sudo iptables -A INPUT -p tcp --dport 5000 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 8080 -j ACCEPT
 ```
 
 ### Port Configuration
@@ -288,7 +281,7 @@ Followed by type-specific payload
 
 ### Ship Shape System
 
-Ships are defined as arrays of cell offsets from a base position. Each ship supports 8 rotations (0-7), allowing for all orientations including diagonals. The validation system checks bounds and overlaps before placement.
+Ships are defined as arrays of cell offsets from a base position. Each ship has a fixed orientation (no rotation). The validation system checks bounds and overlaps before placement.
 
 ### Game State Machine
 
@@ -312,10 +305,11 @@ Ships are defined as arrays of cell offsets from a base position. Each ship supp
 - Or use a different port: `./server 5001`
 
 ### Ships won't place
-- Check rotation value (must be 0-7)
-- Ensure ship fits on board with that rotation
+- Ensure ship fits on board (check if it goes out of bounds)
 - Verify no overlap with existing ships
-- Use format: `A1 R0` (space between coordinate and rotation)
+- Use simple format: `A1` (just the coordinate)
+- Remember: Grid is A-F (rows) and 1-6 (columns)
+- Ships have fixed shapes - make sure there's room!
 
 ### Can't see opponent's board updating
 - This is normal! Opponent's ships are hidden (fog of war)
@@ -391,4 +385,6 @@ Built with ❤️ using pure C, POSIX sockets, and pthreads.
 ---
 
 **Enjoy the game! May your shots be true and your fleet victorious! ⚓️🎯**
+
+
 

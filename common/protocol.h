@@ -6,16 +6,18 @@
 
 // Grid dimensions
 #define GRID_SIZE 6
-#define NUM_SHIPS 3
+#define NUM_SHIPS 4
 
 // Ship types
 typedef enum {
-    SHIP_DESTROYER_1 = 0,  // 2 cells straight
-    SHIP_L_SHAPE = 1,      // 3 cells L-shaped
-    SHIP_Z_SHAPE = 2       // 4 cells Z-shaped
+    SHIP_DESTROYER_1 = 0,  // 2 cells horizontal
+    SHIP_DESTROYER_2 = 1,  // 2 cells vertical
+    SHIP_L_SHAPE = 2,      // 3 cells L-shaped
+    SHIP_Z_SHAPE = 3       // 4 cells Z-shaped
 } ShipType;
 
-// Ship rotation (0-3, covers horizontal and vertical orientations only)
+// Ship rotation (DEPRECATED: rotation removed, kept for protocol compatibility)
+// Always send 0 - rotation is ignored
 typedef uint8_t Rotation;
 
 // Cell state
@@ -107,4 +109,6 @@ typedef struct {
 } __attribute__((packed)) ErrorPayload;
 
 #endif // PROTOCOL_H
+
+
 

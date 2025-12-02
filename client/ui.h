@@ -59,3 +59,5 @@ bool ui_prompt_shot(int* row, int* col);
 
 #endif // UI_H
 
+
+

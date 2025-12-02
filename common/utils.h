@@ -24,3 +24,5 @@ void format_coordinate(int row, int col, char* buffer, size_t buffer_size);
 
 #endif // UTILS_H
 
+
+

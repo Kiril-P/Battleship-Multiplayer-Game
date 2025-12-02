@@ -8,7 +8,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <ifaddrs.h>
 #include <ctype.h>
 #include <sys/time.h>
 
@@ -115,38 +114,9 @@ bool set_socket_timeout(int fd, int timeout_sec) {
 }
 
 bool get_local_ip(char* buffer, size_t buffer_size) {
-    struct ifaddrs* ifaddr;
-    struct ifaddrs* ifa;
-    bool found = false;
-    
-    if (getifaddrs(&ifaddr) == -1) {
-        perror("getifaddrs");
-        return false;
-    }
-    
-    // Look for first non-loopback IPv4 address
-    for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
-        if (ifa->ifa_addr == NULL) continue;
-        
-        if (ifa->ifa_addr->sa_family == AF_INET) {
-            struct sockaddr_in* addr = (struct sockaddr_in*)ifa->ifa_addr;
-            char* ip = inet_ntoa(addr->sin_addr);
-            
-            // Skip loopback
-            if (strncmp(ip, "127.", 4) != 0) {
-                snprintf(buffer, buffer_size, "%s", ip);
-                found = true;
-                break;
-            }
-        }
-    }
-    
-    freeifaddrs(ifaddr);
-    
-    if (!found) {
-        snprintf(buffer, buffer_size, "127.0.0.1");
-    }
-    
+    // Simplified: Just return 0.0.0.0 (user finds their IP manually)
+    // User can use: ifconfig (macOS/Linux) or ipconfig (Windows) to find their IP
+    snprintf(buffer, buffer_size, "0.0.0.0");
     return true;
 }
 
@@ -178,4 +148,6 @@ void format_coordinate(int row, int col, char* buffer, size_t buffer_size) {
     buffer[1] = '1' + col;
     buffer[2] = '\0';
 }
+
+
 

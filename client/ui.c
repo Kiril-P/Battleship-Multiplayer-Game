@@ -264,8 +264,8 @@ void ui_display_ship_shape(ShipType ship_type, int rotation) {
     
     char ship_char = get_ship_display_char(ship_type);
     
-    const char* rot_names[] = {"→ Right", "↓ Down", "← Left", "↑ Up"};
-    printf("\n%sRotation %d (%s):%s\n", COLOR_CYAN, rotation, rot_names[rotation], COLOR_RESET);
+    // No rotation display needed anymore
+    printf("\n%sShip Shape:%s\n", COLOR_CYAN, COLOR_RESET);
     
     // Top border
     printf("   ┌");
@@ -311,22 +311,18 @@ void ui_display_ship_shape(ShipType ship_type, int rotation) {
 void ui_display_placement_instructions(ShipType current_ship) {
     printf("\n%s", COLOR_YELLOW);
     printf("┌─────────────────────────────────────────────────────────────┐\n");
-    printf("│ Place your ship: %-40s │\n", get_ship_name(current_ship));
-    printf("│ Size: %d cells, Character: '%c'%*s│\n", 
-           get_ship_size(current_ship), 
-           get_ship_display_char(current_ship),
-           35, "");
+    printf("│ Place your ship: %-43s│\n", get_ship_name(current_ship));
+    printf("│ Size: %d cells                                               │\n", 
+           get_ship_size(current_ship));
     printf("│                                                             │\n");
-    printf("│ Enter position and rotation (0-3):                         │\n");
-    printf("│ Format: <ROW><COL> R<ROTATION> or r<ROTATION>               │\n");
-    printf("│ Example: A1 R0  or  d3 r2  (lowercase works for both)     │\n");
-    printf("│                                                             │\n");
-    printf("│ Rotations: 0=→ (right)  1=↓ (down)  2=← (left)  3=↑ (up)  │\n");
+    printf("│ Enter position:                                             │\n");
+    printf("│ Format: <ROW><COL>                                          │\n");
+    printf("│ Example: A1, D3, F5  (lowercase works too)                 │\n");
     printf("└─────────────────────────────────────────────────────────────┘\n");
     printf("%s", COLOR_RESET);
     
-    // Show ship shape once (at rotation 0 as reference)
-    printf("\n%sShip shape (shown at rotation 0):%s\n", COLOR_YELLOW, COLOR_RESET);
+    // Show ship shape preview
+    printf("\n%sShip shape preview:%s\n", COLOR_YELLOW, COLOR_RESET);
     ui_display_ship_shape(current_ship, 0);
 }
 
@@ -393,29 +389,13 @@ bool ui_prompt_placement(ShipType ship_type __attribute__((unused)), int* row, i
     // Remove newline
     input[strcspn(input, "\n")] = 0;
     
-    // Parse input: "A1 R0" or "a1 r0" (case insensitive)
-    char coord_str[8] = "";
-    int rot = 0;
-    
-    // Try uppercase R first, then lowercase r
-    if (sscanf(input, "%7s R%d", coord_str, &rot) != 2) {
-        if (sscanf(input, "%7s r%d", coord_str, &rot) != 2) {
-            ui_display_message("Invalid format. Use: A1 R0 or a1 r0", true);
-            return false;
-        }
-    }
-    
-    if (!parse_coordinate(coord_str, row, col)) {
-        ui_display_message("Invalid coordinate. Use A-F (or a-f) for row, 1-6 for column", true);
+    // Parse input: just "A1" - no rotation needed!
+    if (!parse_coordinate(input, row, col)) {
+        ui_display_message("Invalid coordinate. Use A-F for row, 1-6 for column (e.g., A1, D3)", true);
         return false;
     }
     
-    if (rot < 0 || rot > 3) {
-        ui_display_message("Invalid rotation. Use 0-3", true);
-        return false;
-    }
-    
-    *rotation = rot;
+    *rotation = 0; // Always 0 - rotation is ignored
     return true;
 }
 
