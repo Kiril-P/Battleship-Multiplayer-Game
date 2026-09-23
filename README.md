@@ -1,5 +1,7 @@
 # Battleship - Multiplayer Network Game
 
+![Ship placement on the terminal board](docs/media/battleship.png)
+
 A production-quality, multiplayer turn-based Battleship game implemented in pure C using POSIX sockets and threading. Features a beautiful ANSI-colored terminal UI and custom ship shapes inspired by Sea Battle 2.
 
 ## Features
