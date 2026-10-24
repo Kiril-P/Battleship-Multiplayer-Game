@@ -51,3 +51,4 @@ Makefile
 # Test outputs
 test_results/
 
+*.TMP
